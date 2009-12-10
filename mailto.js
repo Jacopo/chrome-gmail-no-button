@@ -39,6 +39,7 @@ function rewriteMailtosOnPage() {
     mailtoStr = rewriteMailtoToGMailUrl(mailtoStr);
     nodes[i].setAttribute('href', mailtoStr);
     nodes[i].setAttribute('target', "_blank");
+    nodes[i].setAttribute('rel', 'noreferrer');
   }
 }
 		
