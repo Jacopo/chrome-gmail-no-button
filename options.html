@@ -1,0 +1,83 @@
+<!DOCTYPE>
+<!--
+ * Copyright (c) 2009 The Chromium Authors. All rights reserved.  Use of this
+ * source code is governed by a BSD-style license that can be found in the
+ * LICENSE file.
+-->
+<html>
+<head>
+  <title>Options for Send from Gmail</title>
+<style>
+.input_option
+{
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+}
+</style>
+<script>
+function loadSavedOptions() {
+  if (window.localStorage == null) {
+    alert("LocalStorage must be enabled for managing options.");
+    return;
+  }
+  var domainName = localStorage["domainName"];
+  if (typeof domainName != "undefined") {
+    document.getElementById('domain_info').value = domainName;
+  }
+  var subjectPrefix = localStorage["subjectPrefix"];
+  if (typeof subjectPrefix != "undefined") {
+    document.getElementById('subject_prefix').value = subjectPrefix;
+  }
+}
+
+function saveOptions() {
+  var domainVal = document.getElementById('domain_info').value; 
+  console.log("Domain - " + domainVal);
+  if ((domainVal != "") && (domainVal.indexOf('.') == -1)) {
+    alert("Does not look like a valid domain - " + domainVal + "\nPlease re-enter");
+  } else {
+    window.localStorage["domainName"] = domainVal;
+  }
+  var subjectPrefix = document.getElementById('subject_prefix').value;
+  window.localStorage["subjectPrefix"] = subjectPrefix;
+  console.log("Saving Subject Prefix - " + subjectPrefix);
+}
+
+</script>
+</head>
+<body onload="loadSavedOptions()">
+<br />
+<table>
+<tr><td width="20%">
+<img src="images/gmail-extension-64.png" width="64" height="64" />
+</td>
+<td>
+<h3>Options for Send from Gmail</h3>
+</td>
+</tr>
+</table>
+<br />
+  <form action="javascript:saveOptions()">
+  <div id="apps_for_domain_option" class="input_option">
+    <strong>Enter the domain name of your <a href="http://www.google.com/apps/">
+    Google Apps for your domain</a> account:</strong>
+    <br />
+    (Enter just the base domain your_domain.com instead of www.your_domain.com.<br />
+     For the consumer gmail, leave the field empty.)
+    <br />
+    <input id="domain_info" type="text" name="domain_info" value="" style="width:400px">
+  </div>
+  <br />  
+  <div id="subject_prefix_option" class="input_option">
+    <strong>Enter a prefix for the subject field when sending from Gmail:</strong>
+    <br />
+    (If the title of the current page is "Nobel prize winners", and your chosen <br />
+     prefix is "Interesting link", the mail will have the subject<br /> 
+     "Interesting link - Nobel prize winners")<br />
+    <input id="subject_prefix" type="text" name="subject_prefix" value="" style="width:400px">
+  </div>
+  <br />
+  <input type="submit" value="Save" />
+  </form>
+</body>
+</html>

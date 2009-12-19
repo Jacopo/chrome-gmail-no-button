@@ -1,0 +1,98 @@
+<!--
+// Copyright (c) 2009 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+-->
+<html>
+<head>
+
+<script>
+var baseGmailUrl = "https://mail.google.com/";
+var gmailUrlSuffix = "mail/?view=cm&fs=1&tf=1";
+
+function makeGmailDomainUrl() {
+  var gmailUrl = baseGmailUrl;
+  var domainName = window.localStorage["domainName"];
+  if ((typeof domainName != "undefined") && (domainName != "")) {
+    gmailUrl += "a/" + domainName + "/";
+  }
+  gmailUrl += gmailUrlSuffix;
+//  alert("GmailUrl - " + gmailUrl);
+  return gmailUrl;
+}
+
+// Getting the summary with the passed info from background.
+var title = '';
+var url = '';
+var summ = '';
+var initByClick = 0;
+
+// Send message to the mailto script to update its cached gmail url.
+// On any change in options, this message will be sent again.
+chrome.extension.onConnect.addListener(function(port) {
+  if (port.name != "GmailUrlConn") {
+  // Not the mailto content script, so do not want to talk to this port. 
+  } else {
+    port.onMessage.addListener(function(msg) {
+    if (msg.req == "GmailUrlPlease") {
+      port.postMessage({gmailDomainUrl: makeGmailDomainUrl()});
+    } else {
+      console.log("Unsupported req on valid port");
+    }
+    });
+  }
+});
+
+chrome.extension.onRequest.addListener(
+  function(conn) {
+  	summ = conn;
+    if (initByClick == 1) {
+      makeGmailWin(summ);
+      initByClick = 0;
+    }
+	});
+
+// From = <whatever gmail account is logged in; If not logged in, redirects to login page>
+// To = <Unfilled> 
+//      [TODO: In the next version, may provide some Options for favorite recipients]
+// Subject = [Interesting Page] <Page's Title>
+// Body = Summary Selection + URL
+chrome.browserAction.onClicked.addListener(
+function(tab) {
+  initByClick = 1;
+  chrome.tabs.executeScript(null, {file: "infopasser.js"});
+  title = tab.title;
+  url = tab.url;
+});
+  
+function makeGmailWin(summary) {
+  // Ensure this is the active window
+	var body = '';
+ 	console.log("Summary = " + summary);
+ 	var subject = "";
+  if ((typeof localStorage["subjectPrefix"] != "undefined") &&
+ 	    (localStorage["subjectPrefix"] != "")) {
+    subject += localStorage["subjectPrefix"] + " - ";
+  }
+  subject += escape(title);
+  // Special case: escape for %AB
+  subject = subject.replace('%AB', '%2D');
+  if (summary == '') {
+    body = escape(url);
+  } else {
+    body = escape(summary + "\n" + url);
+  }
+  var gmailURL = makeGmailDomainUrl() +
+                 "&su=" + subject + "&body=" + body;
+  chrome.windows.create({
+    url: gmailURL,
+    left: 20,
+    top: 30,
+    width: 700,
+    height: 600
+    });
+}
+
+</script>
+</head>
+</html>
