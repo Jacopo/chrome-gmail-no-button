@@ -24,10 +24,6 @@ function loadSavedOptions() {
   if (typeof domainName != "undefined") {
     document.getElementById('domain_info').value = domainName;
   }
-  var subjectPrefix = localStorage["subjectPrefix"];
-  if (typeof subjectPrefix != "undefined") {
-    document.getElementById('subject_prefix').value = subjectPrefix;
-  }
 }
 
 function saveOptions() {
@@ -38,9 +34,6 @@ function saveOptions() {
   } else {
     window.localStorage["domainName"] = domainVal;
   }
-  var subjectPrefix = document.getElementById('subject_prefix').value;
-  window.localStorage["subjectPrefix"] = subjectPrefix;
-  console.log("Saving Subject Prefix - " + subjectPrefix);
 }
 
 </script>
@@ -66,15 +59,6 @@ function saveOptions() {
      For the consumer gmail, leave the field empty.)
     <br />
     <input id="domain_info" type="text" name="domain_info" value="" style="width:400px">
-  </div>
-  <br />  
-  <div id="subject_prefix_option" class="input_option">
-    <strong>Enter a prefix for the subject field when sending from Gmail:</strong>
-    <br />
-    (If the title of the current page is "Nobel prize winners", and your chosen <br />
-     prefix is "Interesting link", the mail will have the subject<br /> 
-     "Interesting link - Nobel prize winners")<br />
-    <input id="subject_prefix" type="text" name="subject_prefix" value="" style="width:400px">
   </div>
   <br />
   <input type="submit" value="Save" />
