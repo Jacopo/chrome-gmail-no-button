@@ -3,7 +3,7 @@
    "content_scripts": [ {
       "all_frames": true,
       "js": [ "mailto.js" ],
-      "matches": [ "http://*/*" ]
+      "matches": [ "http://*/*", "https://*/*" ]
    } ],
    "description": "Makes Gmail your default email application (original Google extension repackaged without toolbar button, safer links)",
    "icons": {
@@ -15,5 +15,5 @@
    "name": "Send from Gmail (no button)",
    "options_page": "options.html",
    "permissions": [ "tabs", "http://*/*", "https://*/*", "http://*.google.com/" ],
-   "version": "1.11.1"
+   "version": "1.11.2"
 }
