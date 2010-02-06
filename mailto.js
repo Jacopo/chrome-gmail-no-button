@@ -1,27 +1,18 @@
 // Copyright (c) 2009 The Chromium Authors. All rights reserved.
+// Copyright (c) 2010 Jacopo Corbetta. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Common utils for extensions for Google Apps
-var toField = "&to=";
 var cachedGmailUrl = "";
 
 function rewriteMailtoToGMailUrl(inUrl) {
-  var retUrl = inUrl;
-  retUrl = retUrl.replace("?", "&");
-  retUrl = retUrl.replace(/subject=/i, "su=");
-  retUrl = retUrl.replace(/CC=/i, "cc=");
-  retUrl = retUrl.replace(/BCC=/i, "bcc=");
-  retUrl = retUrl.replace(/Body=/i, "body=");
-  var gmailUrl = cachedGmailUrl + toField;
-  retUrl = retUrl.replace("mailto:", gmailUrl);
-  return retUrl;
+  return cachedGmailUrl + escape(inUrl);
 }
 
 // Content Scripts
 function rewriteMailtosOnPage() {
   // Find all the mailto links.
-  console.log("Starting to rewrite mailtos");
+  //console.log("Starting to rewrite mailtos");
   var result = document.evaluate(
       '//a[contains(@href, "mailto:")]',
       document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
@@ -53,7 +44,7 @@ if (window == top) {
   bgPort.postMessage({req: "GmailUrlPlease"});
   bgPort.onMessage.addListener(
   function(msg) {
-    console.log("Got message from bg page - " + msg.gmailDomainUrl);
+    //console.log("Got message from bg page - " + msg.gmailDomainUrl);
     cachedGmailUrl = msg.gmailDomainUrl;
     rewriteMailtosOnPage();
     // Not sending any response to ack.
