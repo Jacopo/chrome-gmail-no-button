@@ -15,6 +15,13 @@
 }
 </style>
 <script>
+function doinit() {
+	loadSavedOptions();
+	document.getElementById('optGoogleApps').innerHTML = chrome.i18n.getMessage('optGoogleApps');
+	document.getElementById('optDomain').innerHTML = chrome.i18n.getMessage('optDomain');
+	document.getElementById('optConsumerGmail').innerHTML = chrome.i18n.getMessage('optConsumerGmail');
+}
+
 function loadSavedOptions() {
   if (window.localStorage == null) {
     alert("LocalStorage must be enabled for managing options.");
@@ -30,7 +37,7 @@ function saveOptions() {
   var domainVal = document.getElementById('domain_info').value; 
   console.log("Domain - " + domainVal);
   if ((domainVal != "") && (domainVal.indexOf('.') == -1)) {
-    alert("Does not look like a valid domain - " + domainVal + "\nPlease re-enter");
+    alert(chrome.i18n.getMessage("optDomainError", domainVal));
   } else {
     window.localStorage["domainName"] = domainVal;
   }
@@ -38,30 +45,26 @@ function saveOptions() {
 
 </script>
 </head>
-<body onload="loadSavedOptions()">
-<br />
-<table>
-<tr><td width="20%">
-<img src="images/gmail-extension-64.png" width="64" height="64" />
+<body onload="doinit()">
+<table><tr>
+<td width="20%">
+	<img src="images/gmail-extension-32.png" width="32" height="32" />
 </td>
 <td>
-<h3>Options for Send from Gmail</h3>
-</td>
-</tr>
-</table>
-<br />
+	<h3>Options for Send from Gmail</h3>
+</td></tr></table>
+<p>
   <form action="javascript:saveOptions()">
   <div id="apps_for_domain_option" class="input_option">
-    <strong>Enter the domain name of your <a href="http://www.google.com/apps/">
-    Google Apps for your domain</a> account:</strong>
+    <strong><span id="optGoogleApps"></span></strong>
     <br />
-    (Enter just the base domain your_domain.com instead of www.your_domain.com.<br />
-     For the consumer gmail, leave the field empty.)
-    <br />
+    <span id="optDomain"></span><br />
+    <span id="optConsumerGmail"></span><br />
     <input id="domain_info" type="text" name="domain_info" value="" style="width:400px">
   </div>
   <br />
-  <input type="submit" value="Save" />
+  <input type="submit" />
   </form>
+</p>
 </body>
 </html>

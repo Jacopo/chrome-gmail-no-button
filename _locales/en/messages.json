@@ -1,0 +1,23 @@
+{
+	"extName": {
+		"message":      "Send from Gmail (no button)",
+		"description":  "Extension name"
+	},
+	"extDesc": {
+		"message":	"Makes Gmail your default email application (original Google extension repackaged without toolbar button, safer links)",
+		"description":  "Extension description"
+	},
+	"optGoogleApps": {
+		"message":	"Enter the domain name of your Google Apps account:"
+	},
+	"optDomain": {
+		"message":	"(Enter just the base domain your_domain.com instead of www.your_domain.com."
+	},
+	"optConsumerGmail": {
+		"message":	"For the consumer gmail, leave the field empty.)"
+	},
+	"optDomainError": {
+		"message":	"Does not look like a valid domain - $1\nPlease re-enter",
+		"description":	"The user provided a wrong domain string"
+	}
+}

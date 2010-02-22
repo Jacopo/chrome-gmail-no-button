@@ -5,15 +5,16 @@
       "js": [ "mailto.js" ],
       "matches": [ "http://*/*", "https://*/*" ]
    } ],
-   "description": "Makes Gmail your default email application (original Google extension repackaged without toolbar button, safer links)",
+   "description": "__MSG_extDesc__",
    "icons": {
       "128": "images/gmail-extension-128.png",
       "16": "images/gmail-extension-16.png",
       "32": "images/gmail-extension-32.png",
       "64": "images/gmail-extension-64.png"
    },
-   "name": "Send from Gmail (no button)",
+   "name": "__MSG_extName__",
+   "default_locale": "en",
    "options_page": "options.html",
    "permissions": [ "tabs", "http://*/*", "https://*/*", "http://*.google.com/" ],
-   "version": "1.11.2"
+   "version": "1.11.3"
 }
