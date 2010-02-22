@@ -1,0 +1,23 @@
+{
+	"extName": {
+		"message":      "Invia con Gmail (niente bottoni!)",
+		"description":  "Nome dell'estensione"
+	},
+	"extDesc": {
+		"message":	"Usa Gmail per comporre messaggi e-mail (estensione originale di Google modificata per eliminare bottoni superflui e correggere alcuni problemi)",
+		"description":  "Descrizione dell'estensione"
+	},
+	"optGoogleApps": {
+		"message":	"Nome di dominio associato al tuo account di Google Apps:"
+	},
+	"optDomain": {
+		"message":	"(Inserire solo il dominio base: tuo_dominio.it invece di www.tuo_dominio.it"
+	},
+	"optConsumerGmail": {
+		"message":	"Per il comune servizio Gmail, lasciare vuoto il campo.)"
+	},
+	"optDomainError": {
+		"message":	"$1 non sembra un nome di dominio valido\nRiprovare",
+		"description":	"L'utente ha fornito una stringa errata per il nome di dominio"
+	}
+}
