@@ -11,17 +11,25 @@ function rewriteMailtoToGMailUrl(inUrl) {
 
 // Content Scripts
 function rewriteMailtosOnPage() {
-  // Find all the mailto links.
-  //console.log("Starting to rewrite mailtos");
+  // Find all the A mailto links.
   var result = document.evaluate(
       '//a[contains(@href, "mailto:")]',
       document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+  rewriteMailtos(result);
+  
+  // Find all the AREA mailto links.
+  var result = document.evaluate(
+      '//area[contains(@href, "mailto:")]',
+      document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+  rewriteMailtos(result);
+}
 
+function rewriteMailtos(allofthem) {
   var item;
   var nodes = [];
   // cannot change the NODE_ITERATOR nodes' attributes in this loop itself
   // since iterateNext will invalidate the state; Need to store temporarily.
-  while (item = result.iterateNext()) {
+  while (item = allofthem.iterateNext()) {
     nodes.push(item);
   }
   
