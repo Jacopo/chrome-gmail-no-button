@@ -3,7 +3,7 @@
    "content_scripts": [ {
       "all_frames": true,
       "js": [ "mailto.js" ],
-      "matches": [ "http://*/*", "https://*/*" ]
+      "matches": [ "<all_urls>" ]
    } ],
    "description": "__MSG_extDesc__",
    "icons": {
