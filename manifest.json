@@ -15,6 +15,5 @@
    "name": "__MSG_extName__",
    "default_locale": "en",
    "options_page": "options.html",
-   "permissions": [ "tabs", "http://*/*", "https://*/*", "http://*.google.com/" ],
    "version": "1.11.4"
 }
