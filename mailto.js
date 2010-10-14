@@ -41,20 +41,19 @@ function rewriteMailtos(allofthem) {
     nodes[i].setAttribute('rel', 'noreferrer');
   }
 }
-		
-if (window == top) {
-  if (cachedGmailUrl != "") {
-    rewriteMailtosOnPage();
-    window.addEventListener("focus", rewriteMailtosOnPage);
-  }
-  
-  var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
-  bgPort.postMessage({req: "GmailUrlPlease"});
-  bgPort.onMessage.addListener(
-  function(msg) {
-    //console.log("Got message from bg page - " + msg.gmailDomainUrl);
-    cachedGmailUrl = msg.gmailDomainUrl;
-    rewriteMailtosOnPage();
-    // Not sending any response to ack.
-  });
+
+
+if (cachedGmailUrl != "") {
+  rewriteMailtosOnPage();
+  window.addEventListener("focus", rewriteMailtosOnPage);
 }
+  
+var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
+bgPort.postMessage({req: "GmailUrlPlease"});
+bgPort.onMessage.addListener(
+function(msg) {
+  //console.log("Got message from bg page - " + msg.gmailDomainUrl);
+  cachedGmailUrl = msg.gmailDomainUrl;
+  rewriteMailtosOnPage();
+  // Not sending any response to ack.
+});
