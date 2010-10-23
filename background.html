@@ -2,11 +2,25 @@
 // Copyright (c) 2009 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+//
+// Copyright (c) 2010 Jacopo Corbetta
 -->
 <html>
 <head>
 
 <script>
+
+//////////////////////////////////////////////////////////////////////
+//
+// This background page:
+//
+// 1. Holds the selected GMail URL andprovides it to
+//    the other scripts when requested
+//
+// 2. Registers and handles the right-click context menu
+//
+//////////////////////////////////////////////////////////////////////
+
 var baseGmailUrl = "https://mail.google.com/";
 var gmailUrlSuffix = "mail/?extsrc=mailto&url=";
 
@@ -36,6 +50,48 @@ chrome.extension.onConnect.addListener(function(port) {
     });
   }
 });
+
+
+
+// Context menu callbacks
+function menuClicked(info, tab) {
+	// Parses the mailto: URL to extract the destination email address only
+	// Reference: RFC 2368
+
+	// 1) Remove our prefix and the mailto: scheme to reconstruct the original link payload
+	var ourprefix = makeGmailDomainUrl();
+	var original = unescape(info.linkUrl.replace(new RegExp("^" + ourprefix.replace('?','\\?') + "mailto%3A"), ''));
+	console.log("LinkUrl: " + info.linkUrl);
+	console.log("Original: " + original);
+
+	// 2) Addresses can be specified in two places: at the beginning or as a "to=" header
+	//    These can both coexist, and addresses can have comments (the full syntax can be used).
+	//    We can count on the special characters ?, & and % to appear only in escaped form.
+	//    Apparently, multiple "to=" parameters can be specified.
+	var splits = original.split('?',2);
+	var to_copy = unescape(splits[0]);
+	if (splits[1]) {
+		var re = new RegExp("to=(.*?)(&|$)");
+		var match_results = re.exec(splits[1]);
+		if (to_copy && match_results && match_results[1])
+			to_copy += ', ';
+		if (match_results && match_results[1])
+			to_copy += unescape(match_results[1]);
+	}
+	console.log("To copy: " + to_copy);
+}
+function creationCallback() {
+	if (chrome.extension.lastError)
+		console.log("Error creating context menu: ", chrome.extension.lastError);
+}
+
+// Register the right-click menu
+var menuId = chrome.contextMenus.create( {
+		"title": "Copy Email Address",
+		"contexts": ['link'],
+		"onclick": menuClicked,
+		"targetUrlPatterns" : [makeGmailDomainUrl() + "*"]
+		}, creationCallback);
 
 </script>
 </head>

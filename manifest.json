@@ -5,6 +5,9 @@
       "js": [ "mailto.js" ],
       "matches": [ "<all_urls>" ]
    } ],
+   "permissions": [
+	"contextMenus"
+   ],
    "description": "__MSG_extDesc__",
    "icons": {
       "128": "images/gmail-extension-128.png",
