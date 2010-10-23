@@ -93,7 +93,7 @@ function creationCallback() {
 
 // Register the right-click menu
 var menuId = chrome.contextMenus.create( {
-		"title": "Copy Email Address",
+		"title": "Copy &Email Address",
 		"contexts": ['link'],
 		"onclick": menuClicked,
 		"targetUrlPatterns" : [makeGmailDomainUrl() + "*"]
