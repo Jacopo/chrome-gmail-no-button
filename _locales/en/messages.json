@@ -4,7 +4,7 @@
 		"description":  "Extension name"
 	},
 	"extDesc": {
-		"message":	"Makes the Gmail webmail your default email application (original Google extension repackaged without toolbar button, safer links)",
+		"message":	"Makes the Gmail webmail your default email application (original Google extension repackaged without toolbar button, with safer links and working 'copy address' option)",
 		"description":  "Extension description"
 	},
 	"optGoogleApps": {
