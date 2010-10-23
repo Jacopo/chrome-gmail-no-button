@@ -61,24 +61,30 @@ function menuClicked(info, tab) {
 	// 1) Remove our prefix and the mailto: scheme to reconstruct the original link payload
 	var ourprefix = makeGmailDomainUrl();
 	var original = unescape(info.linkUrl.replace(new RegExp("^" + ourprefix.replace('?','\\?') + "mailto%3A"), ''));
-	console.log("LinkUrl: " + info.linkUrl);
-	console.log("Original: " + original);
 
 	// 2) Addresses can be specified in two places: at the beginning or as a "to=" header
 	//    These can both coexist, and addresses can have comments (the full syntax can be used).
 	//    We can count on the special characters ?, & and % to appear only in escaped form.
-	//    Apparently, multiple "to=" parameters can be specified.
+	//    Apparently, multiple "to=" headers can be specified.
 	var splits = original.split('?',2);
-	var to_copy = unescape(splits[0]);
-	if (splits[1]) {
-		var re = new RegExp("to=(.*?)(&|$)");
-		var match_results = re.exec(splits[1]);
+	var to_copy = unescape(splits[0]); // The (optional) addresses in the beginning
+	var hdrs = [];
+	if (splits[1])
+		hdrs = splits[1].split('&');
+	hdrs.forEach(function(h) {
+		var match_results = /to=(.*)/.exec(h);
 		if (to_copy && match_results && match_results[1])
 			to_copy += ', ';
 		if (match_results && match_results[1])
 			to_copy += unescape(match_results[1]);
-	}
-	console.log("To copy: " + to_copy);
+	});
+
+	// 3) Copy to clipboard
+	//    The trick is to put the string in a textarea, select it and then execute the global "copy" command
+	var aux = document.getElementById("aux_textarea");
+	aux.value = to_copy;
+	aux.select();
+	document.execCommand("copy");
 }
 function creationCallback() {
 	if (chrome.extension.lastError)
@@ -95,4 +101,9 @@ var menuId = chrome.contextMenus.create( {
 
 </script>
 </head>
+<body>
+	<form>
+		<textarea id="aux_textarea">
+	</form>
+</body>
 </html>
