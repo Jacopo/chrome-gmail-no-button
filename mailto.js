@@ -6,7 +6,13 @@
 var cachedGmailUrl = "";
 
 function rewriteMailtoToGMailUrl(inUrl) {
-  return cachedGmailUrl + escape(inUrl);
+  // GMail unescapes most of the string in the first step,
+  // so "%2B" would get replaced with "+". Unfortunately,
+  // the next step still tries to decode the string, and
+  // plus is interpreted as space.
+  // Workaround: double encoding for plus.
+  inUrl = inUrl.replace("+","%2B")
+  return cachedGmailUrl + encodeURIComponent(inUrl);
 }
 
 // Content Scripts
