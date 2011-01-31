@@ -19,5 +19,8 @@
 	"optDomainError": {
 		"message":	"$1 non sembra un nome di dominio valido\nRiprovare",
 		"description":	"L'utente ha fornito una stringa errata per il nome di dominio"
+	},
+	"optSecondaryAccount": {
+		"message":	"Account secondario:"
 	}
 }

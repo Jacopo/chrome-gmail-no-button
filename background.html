@@ -14,8 +14,8 @@
 //
 // This background page:
 //
-// 1. Holds the selected GMail URL andprovides it to
-//    the other scripts when requested
+// 1. Holds the selected options (GMail URL, etc.) and provides
+//    them to the other scripts when requested
 //
 // 2. Registers and handles the right-click context menu
 //
@@ -34,6 +34,14 @@ function makeGmailDomainUrl() {
 //  alert("GmailUrl - " + gmailUrl);
   return gmailUrl;
 }
+
+function getSecondaryMagic() {
+	var secondaryMagic = window.localStorage["secondaryMagic"];
+	if (typeof secondaryMagic != "undefined") {
+		return secondaryMagic;
+	} else return "";
+}
+
 
 // Send message to the mailto script to update its cached gmail url.
 // On any change in options, this message will be sent again.
@@ -54,7 +62,7 @@ chrome.extension.onConnect.addListener(function(port) {
 
 
 // Context menu callbacks
-function menuClicked(info, tab) {
+function menuEmailClicked(info, tab) {
 	// Parses the mailto: URL to extract the destination email address only
 	// Reference: RFC 2368
 
@@ -86,18 +94,28 @@ function menuClicked(info, tab) {
 	aux.select();
 	document.execCommand("copy");
 }
+function menuSecondaryClicked() {
+}
 function creationCallback() {
 	if (chrome.extension.lastError)
 		console.log("Error creating context menu: ", chrome.extension.lastError);
 }
 
-// Register the right-click menu
-var menuId = chrome.contextMenus.create( {
+// Register the right-click menus
+var menuEmailId = chrome.contextMenus.create( {
 		"title": "Copy &Email Address",
 		"contexts": ['link'],
-		"onclick": menuClicked,
+		"onclick": menuEmailClicked,
 		"targetUrlPatterns" : [makeGmailDomainUrl() + "*"]
 		}, creationCallback);
+if (getSecondaryMagic() != "") {
+	var menuSecondaryId = chrome.contextMenus.create( {
+		"title": "Send with my secondary account",
+		"contexts": ['link'],
+		"onclick": menuSecondaryClicked,
+		"targetUrlPatterns" : [makeGmailDomainUrl() + "*"]
+		}, creationCallback);
+}
 
 </script>
 </head>

@@ -19,5 +19,8 @@
 	"optDomainError": {
 		"message":	"Does not look like a valid domain - $1\nPlease re-enter",
 		"description":	"The user provided a wrong domain string"
+	},
+	"optSecondaryAccount": {
+		"message":	"Secondary account:"
 	}
 }

@@ -20,6 +20,7 @@ function doinit() {
 	document.getElementById('optGoogleApps').innerHTML = chrome.i18n.getMessage('optGoogleApps');
 	document.getElementById('optDomain').innerHTML = chrome.i18n.getMessage('optDomain');
 	document.getElementById('optConsumerGmail').innerHTML = chrome.i18n.getMessage('optConsumerGmail');
+	document.getElementById('optSecondaryAccount').innerHTML = chrome.i18n.getMessage('optSecondaryAccount');
 }
 
 function loadSavedOptions() {
@@ -28,19 +29,39 @@ function loadSavedOptions() {
     return;
   }
   var domainName = localStorage["domainName"];
+  var secondaryMagic = localStorage["secondaryMagic"];
   if (typeof domainName != "undefined") {
     document.getElementById('domain_info').value = domainName;
+  }
+  if ((typeof secondaryMagic != "undefined") && (secondaryMagic != "")) {
+    document.getElementById('secondary_magic').value = secondaryMagic;
+    document.getElementById('secondary_enable').value = true;
+  } else {
+    document.getElementById('secondary_enable').value = false;
+    document.getElementById('secondary_magic').disabled = true;
   }
 }
 
 function saveOptions() {
   var domainVal = document.getElementById('domain_info').value; 
-  console.log("Domain - " + domainVal);
   if ((domainVal != "") && (domainVal.indexOf('.') == -1)) {
     alert(chrome.i18n.getMessage("optDomainError", domainVal));
   } else {
     window.localStorage["domainName"] = domainVal;
   }
+  if (document.getElementById('secondary_enable').value == true) {
+	window.localStorage["secondaryMagic"] = document.getElementById('secondary_magic').value;
+  } else {
+  	window.localStorage.removeItem("secondaryMagic");
+  }
+}
+
+function checkboxClick() {
+	if (document.getElementById('secondary_enable').checked) {
+		document.getElementById('secondary_magic').disabled = false;
+	} else {
+		document.getElementById('secondary_magic').disabled = true;
+	}
 }
 
 </script>
@@ -61,6 +82,15 @@ function saveOptions() {
     <span id="optDomain"></span><br />
     <span id="optConsumerGmail"></span><br />
     <input id="domain_info" type="text" name="domain_info" value="" style="width:400px">
+  </div>
+  <br />
+  <div id="multi_account_option" class="input_option">
+	<strong><span id="optSecondaryAccount"></span></strong>
+	<br />
+	<input onclick="checkboxClick();" type="checkbox" name="secondary_enable" id="secondary_enable"><label for="secondary_enable">I have a secondary account </label><label for="secondary_magic">with this magic parameter: </label><input type="text" name="secondary_magic" id="secondary_magic" value="b/33/u/0/">
+	<br />
+	To find your magic parameter, open the secondary account and note the text right after "mail"<br />
+	(example: <tt>https://mail.google.com/mail/<b>b/33/u/0/</b>#inbox</tt>).
   </div>
   <br />
   <input type="submit" />
