@@ -53,52 +53,6 @@ chrome.extension.onConnect.addListener(function(port) {
 
 
 
-// Context menu callbacks
-function menuClicked(info, tab) {
-	// Parses the mailto: URL to extract the destination email address only
-	// Reference: RFC 2368
-
-	// 1) Remove our prefix and the mailto: scheme to reconstruct the original link payload
-	var ourprefix = makeGmailDomainUrl();
-	var original = unescape(info.linkUrl.replace(new RegExp("^" + ourprefix.replace('?','\\?') + "mailto%3A"), ''));
-
-	// 2) Addresses can be specified in two places: at the beginning or as a "to=" header
-	//    These can both coexist, and addresses can have comments (the full syntax can be used).
-	//    We can count on the special characters ?, & and % to appear only in escaped form.
-	//    Apparently, multiple "to=" headers can be specified.
-	var splits = original.split('?',2);
-	var to_copy = unescape(splits[0]); // The (optional) addresses in the beginning
-	var hdrs = [];
-	if (splits[1])
-		hdrs = splits[1].split('&');
-	hdrs.forEach(function(h) {
-		var match_results = /to=(.*)/.exec(h);
-		if (to_copy && match_results && match_results[1])
-			to_copy += ', ';
-		if (match_results && match_results[1])
-			to_copy += unescape(match_results[1]);
-	});
-
-	// 3) Copy to clipboard
-	//    The trick is to put the string in a textarea, select it and then execute the global "copy" command
-	var aux = document.getElementById("aux_textarea");
-	aux.value = to_copy;
-	aux.select();
-	document.execCommand("copy");
-}
-function creationCallback() {
-	if (chrome.extension.lastError)
-		console.log("Error creating context menu: ", chrome.extension.lastError);
-}
-
-// Register the right-click menu
-var menuId = chrome.contextMenus.create( {
-		"title": "Copy &Email Address",
-		"contexts": ['link'],
-		"onclick": menuClicked,
-		"targetUrlPatterns" : [makeGmailDomainUrl() + "*"]
-		}, creationCallback);
-
 </script>
 </head>
 <body>
