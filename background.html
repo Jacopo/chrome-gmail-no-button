@@ -12,13 +12,8 @@
 
 //////////////////////////////////////////////////////////////////////
 //
-// This background page:
-//
-// 1. Holds the selected options and provides them to
-//    the other scripts when requested
-//
-// 2. Registers and handles the right-click context menu
-//
+// This background page holds the selected options and provides them
+// to the other scripts when requested
 //////////////////////////////////////////////////////////////////////
 
 var baseGmailUrl = "https://mail.google.com/";
@@ -36,7 +31,6 @@ function makeGmailDomainUrl() {
 }
 
 // Send message to the mailto script to update its cached gmail url and other options.
-// On any change in options, this message will be sent again.
 chrome.extension.onConnect.addListener(function(port) {
   if (port.name != "GmailUrlConn") {
   // Not the mailto content script, so do not want to talk to this port. 

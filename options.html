@@ -1,13 +1,15 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <!--
  * Copyright (c) 2009 The Chromium Authors. All rights reserved.  Use of this
  * source code is governed by a BSD-style license that can be found in the
  * LICENSE file.
+ * Copyright (c) 2009-2011 Jacopo Corbetta
 -->
 <html>
 <head>
+<meta charset="UTF-8">
 <title>Options for Send using Gmail</title>
-<style>
+<style type="text/css">
   body {
 	  font-family: 'Trebuchet MS', sans-serif;
 	  font-size: 13px;
@@ -15,7 +17,7 @@
 	  color: #111;
 	  padding-left: 100px;
 	  padding-top: 10px;
-	  background: white url(images/gmail-extension-64.png) no-repeat fixed 16px 6px;
+	  background: white url(images/gmail-extension-64.png) no-repeat fixed 16px 18px;
   }
   h1,h2 {
 	  color: #444;
@@ -78,13 +80,13 @@ function saveOptions() {
 </head>
 <body onload="doinit()">
 
-  <h1>Options for Send from Gmail</h1>
+  <h1>Options for Send using Gmail&trade;</h1>
 
   <form action="javascript:saveOptions()">
-  <h2><span id="optOpenNewWindow"></h2>
+	  <h2><span id="optOpenNewWindow"></span></h2>
   <div id="new_window_option" class="options_group">
-    <input id="open_new_tab" type="radio" name="window_options_radio" value="tab"><span id="optInTab"></span></input><br />
-    <input id="open_new_window" type="radio" name="window_options_radio" value="win"><span id="optInWin"></span></input>
+    <label><input id="open_new_tab" type="radio" name="window_options_radio" value="tab" /><span id="optInTab"></span></label><br />
+    <label><input id="open_new_window" type="radio" name="window_options_radio" value="win" /><span id="optInWin"></span></label>
   </div>
   <h2><span id="optGoogleApps"></span></h2>
   <div id="apps_for_domain_option" class="options_group">

@@ -1,14 +1,14 @@
 {
 	"extName": {
-		"message":      "Send using Gmail (no button)",
+		"message":      "Send using Gmail™ (no button)",
 		"description":  "Extension name"
 	},
 	"extDesc": {
-		"message":	"Makes the Gmail webmail your default email application (original Google extension repackaged without toolbar button, with safer links and working 'copy address' option)",
+		"message":	"Makes the Gmail™ webmail your default email application (original Google extension repackaged without toolbar button, with safer links and working 'copy address' option)",
 		"description":  "Extension description"
 	},
 	"optGoogleApps": {
-		"message":	"Enter the domain name of your Google Apps account:"
+		"message":	"Enter the domain name of your Google Apps™ account:"
 	},
 	"optDomain": {
 		"message":	"(Enter just the base domain your_domain.com instead of www.your_domain.com."
