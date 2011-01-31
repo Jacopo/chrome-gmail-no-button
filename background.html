@@ -14,7 +14,7 @@
 //
 // This background page:
 //
-// 1. Holds the selected GMail URL andprovides it to
+// 1. Holds the selected options and provides them to
 //    the other scripts when requested
 //
 // 2. Registers and handles the right-click context menu
@@ -35,15 +35,15 @@ function makeGmailDomainUrl() {
   return gmailUrl;
 }
 
-// Send message to the mailto script to update its cached gmail url.
+// Send message to the mailto script to update its cached gmail url and other options.
 // On any change in options, this message will be sent again.
 chrome.extension.onConnect.addListener(function(port) {
   if (port.name != "GmailUrlConn") {
   // Not the mailto content script, so do not want to talk to this port. 
   } else {
     port.onMessage.addListener(function(msg) {
-    if (msg.req == "GmailUrlPlease") {
-      port.postMessage({gmailDomainUrl: makeGmailDomainUrl()});
+    if (msg.req == "OptionsPlease") {
+      port.postMessage({gmailDomainUrl: makeGmailDomainUrl(), windowOptions: window.localStorage["gmail_window_options"]});
     } else {
       console.log("Unsupported req on valid port");
     }

@@ -6,20 +6,47 @@
 -->
 <html>
 <head>
-  <title>Options for Send from Gmail</title>
+<title>Options for Send using Gmail</title>
 <style>
-.input_option
-{
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 10pt;
-}
+  body {
+	  font-family: 'Trebuchet MS', sans-serif;
+	  font-size: 13px;
+	  max-width: 800px;
+	  color: #111;
+	  padding-left: 100px;
+	  padding-top: 10px;
+	  background: white url(images/gmail-extension-64.png) no-repeat fixed 16px 6px;
+  }
+  h1,h2 {
+	  color: #444;
+  }
+  h1 {
+	  margin-bottom: 1.2em;
+  }
+  h2 {
+	  font-size: 1.3em;
+	  margin-bottom: 0em;
+  }
+  div.options_group {
+	  border-bottom: 1px solid #aaa;
+	  margin-bottom: 2em;
+	  padding-bottom: 1em;
+  }
 </style>
 <script>
+
+var optionsForNewWindow = "resizable=yes,scrollbars=yes,status=yes";
+
 function doinit() {
 	loadSavedOptions();
 	document.getElementById('optGoogleApps').innerHTML = chrome.i18n.getMessage('optGoogleApps');
 	document.getElementById('optDomain').innerHTML = chrome.i18n.getMessage('optDomain');
 	document.getElementById('optConsumerGmail').innerHTML = chrome.i18n.getMessage('optConsumerGmail');
+	document.getElementById('optOpenNewWindow').innerHTML = chrome.i18n.getMessage('optOpenNewWindow');
+	document.getElementById('optInTab').innerHTML = chrome.i18n.getMessage('optInTab');
+	document.getElementById('optInWin').innerHTML = chrome.i18n.getMessage('optInWin');
+	document.getElementById('optNoteReload').innerHTML = chrome.i18n.getMessage('optNoteReload');
+	document.getElementById('options_save').value = chrome.i18n.getMessage('optSave');
 }
 
 function loadSavedOptions() {
@@ -28,9 +55,12 @@ function loadSavedOptions() {
     return;
   }
   var domainName = localStorage["domainName"];
+  var windowOptions = localStorage["gmail_window_options"];
   if (typeof domainName != "undefined") {
     document.getElementById('domain_info').value = domainName;
   }
+  document.getElementById('open_new_tab').checked = (windowOptions != optionsForNewWindow);
+  document.getElementById('open_new_window').checked = (windowOptions == optionsForNewWindow);
 }
 
 function saveOptions() {
@@ -41,30 +71,31 @@ function saveOptions() {
   } else {
     window.localStorage["domainName"] = domainVal;
   }
+  localStorage["gmail_window_options"] = document.getElementById('open_new_window').checked ? optionsForNewWindow : "";
 }
 
 </script>
 </head>
 <body onload="doinit()">
-<table><tr>
-<td width="20%">
-	<img src="images/gmail-extension-32.png" width="32" height="32" />
-</td>
-<td>
-	<h3>Options for Send from Gmail</h3>
-</td></tr></table>
-<p>
+
+  <h1>Options for Send from Gmail</h1>
+
   <form action="javascript:saveOptions()">
-  <div id="apps_for_domain_option" class="input_option">
-    <strong><span id="optGoogleApps"></span></strong>
-    <br />
+  <h2><span id="optOpenNewWindow"></h2>
+  <div id="new_window_option" class="options_group">
+    <input id="open_new_tab" type="radio" name="window_options_radio" value="tab"><span id="optInTab"></span></input><br />
+    <input id="open_new_window" type="radio" name="window_options_radio" value="win"><span id="optInWin"></span></input>
+  </div>
+  <h2><span id="optGoogleApps"></span></h2>
+  <div id="apps_for_domain_option" class="options_group">
     <span id="optDomain"></span><br />
     <span id="optConsumerGmail"></span><br />
-    <input id="domain_info" type="text" name="domain_info" value="" style="width:400px">
+    <input id="domain_info" type="text" name="domain_info" value="" style="width:400px" />
   </div>
-  <br />
-  <input type="submit" />
+  <div>
+    <input id="options_save" type="submit" value="Save" />
+    <span id="optNoteReload"></span>
+  </div>
   </form>
-</p>
 </body>
 </html>

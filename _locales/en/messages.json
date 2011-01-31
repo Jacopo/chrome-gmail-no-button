@@ -19,5 +19,20 @@
 	"optDomainError": {
 		"message":	"Does not look like a valid domain - $1\nPlease re-enter",
 		"description":	"The user provided a wrong domain string"
+	},
+	"optOpenNewWindow": {
+		"message":	"Open the composition interface:"
+	},
+	"optInTab": {
+		"message":	"In a new tab"
+	},
+	"optInWin": {
+		"message":	"In a new window"
+	},
+	"optNoteReload": {
+		"message":	"Note: you might need to reload tabs for the options to take effect"
+	},
+	"optSave": {
+		"message":	"Save"
 	}
 }

@@ -4,18 +4,18 @@
 // found in the LICENSE file.
 
 var cachedGmailUrl = "";
+var windowOptions = "";
 
-function rewriteMailtoToGMailUrl(inUrl) {
+function encodeForMailto(inUrl) {
   // GMail unescapes most of the string in the first step,
   // so "%2B" would get replaced with "+". Unfortunately,
   // the next step still tries to decode the string, and
   // plus is interpreted as space.
   // Workaround: double encoding for plus.
   inUrl = inUrl.replace("+","%2B")
-  return cachedGmailUrl + encodeURIComponent(inUrl);
+  return encodeURIComponent(inUrl);
 }
 
-// Content Scripts
 function rewriteMailtosOnPage() {
   // Find all the A mailto links.
   var result = document.evaluate(
@@ -40,13 +40,19 @@ function rewriteMailtos(allofthem) {
   }
   
   for (var i = 0; i < nodes.length; i++) {
-    var mailtoStr = nodes[i].getAttribute('href');
-    mailtoStr = rewriteMailtoToGMailUrl(mailtoStr);
-    nodes[i].setAttribute('href', mailtoStr);
-    nodes[i].setAttribute('target', "_blank");
     nodes[i].setAttribute('rel', 'noreferrer');
+    nodes[i].addEventListener('click', creaListener(nodes[i].getAttribute('href')), false);
   }
 }
+
+function creaListener(originalUrl)
+{
+  return function(ev) {
+    window.open(cachedGmailUrl + encodeForMailto(originalUrl), "_blank", windowOptions);
+    ev.preventDefault();
+  };
+}
+
 
 
 if (cachedGmailUrl != "") {
@@ -55,11 +61,12 @@ if (cachedGmailUrl != "") {
 }
   
 var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
-bgPort.postMessage({req: "GmailUrlPlease"});
+bgPort.postMessage({req: "OptionsPlease"});
 bgPort.onMessage.addListener(
 function(msg) {
   //console.log("Got message from bg page - " + msg.gmailDomainUrl);
   cachedGmailUrl = msg.gmailDomainUrl;
+  windowOptions = msg.windowOptions;
   rewriteMailtosOnPage();
   // Not sending any response to ack.
 });

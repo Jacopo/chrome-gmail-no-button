@@ -20,4 +20,21 @@
 		"message":	"$1 non sembra un nome di dominio valido\nRiprovare",
 		"description":	"L'utente ha fornito una stringa errata per il nome di dominio"
 	}
+        "optOpenNewWindow": {
+                "message":      "Apri l'interfaccia di scrittura:"
+        },
+        "optInTab": {
+                "message":      "In una nuova tab"
+        },
+        "optInWin": {
+                "message":      "In una nuova finestra"
+        },
+        "optNoteReload": {
+                "message":      "Nota: potrebbe essere necessario ricaricare le pagine perché le modifiche abbiano effetto."
+        },
+        "optSave": {
+                "message":      "Salva"
+        }       
+}
+
 }
