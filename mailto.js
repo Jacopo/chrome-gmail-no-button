@@ -5,6 +5,7 @@
 
 var cachedGmailUrl = "";
 var windowOptions = "";
+var listenersAdded = false;
 
 function encodeForMailto(inUrl) {
   // GMail unescapes most of the string in the first step,
@@ -28,6 +29,8 @@ function rewriteMailtosOnPage() {
       '//area[contains(@href, "mailto:")]',
       document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
   rewriteMailtos(result);
+
+  listenersAdded = true;
 }
 
 function rewriteMailtos(allofthem) {
@@ -54,10 +57,14 @@ function creaListener(originalUrl)
 }
 
 
+function prova_evento(ev)
+{
+  console.log("Prova evento: " + JSON.stringify(ev));
+}
 
 if (cachedGmailUrl != "") {
   rewriteMailtosOnPage();
-  window.addEventListener("focus", rewriteMailtosOnPage);
+  window.addEventListener("focus", prova_evento);
 }
   
 var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
@@ -67,6 +74,7 @@ function(msg) {
   //console.log("Got message from bg page - " + msg.windowOptions);
   cachedGmailUrl = msg.gmailDomainUrl;
   windowOptions = msg.windowOptions;
-  rewriteMailtosOnPage();
-  // Not sending any response to ack.
+  
+  if (!listenersAdded)
+    rewriteMailtosOnPage();
 });
