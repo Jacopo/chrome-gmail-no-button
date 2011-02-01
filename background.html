@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
-// Copyright (c) 2010 Jacopo Corbetta
+// Copyright (c) 2010-2011 Jacopo Corbetta
 -->
 <html>
 <head>
@@ -12,12 +12,17 @@
 
 //////////////////////////////////////////////////////////////////////
 //
-// This background page holds the selected options and provides them
-// to the other scripts when requested
+// This background page:
+//
+//   1) Holds the selected options and provides them
+//      to the other scripts when requested
+//
+//   2) Registers and handles the right-click context menus
+//
 //////////////////////////////////////////////////////////////////////
 
 var baseGmailUrl = "https://mail.google.com/";
-var gmailUrlSuffix = "mail/?extsrc=mailto&url=";
+var mailtoUrlSuffix = "mail/?extsrc=mailto&url=";
 
 function makeGmailDomainUrl() {
   var gmailUrl = baseGmailUrl;
@@ -25,8 +30,6 @@ function makeGmailDomainUrl() {
   if ((typeof domainName != "undefined") && (domainName != "")) {
     gmailUrl += "a/" + domainName + "/";
   }
-  gmailUrl += gmailUrlSuffix;
-//  alert("GmailUrl - " + gmailUrl);
   return gmailUrl;
 }
 
@@ -37,7 +40,7 @@ chrome.extension.onConnect.addListener(function(port) {
   } else {
     port.onMessage.addListener(function(msg) {
     if (msg.req == "OptionsPlease") {
-      port.postMessage({gmailDomainUrl: makeGmailDomainUrl(), windowOptions: window.localStorage["gmail_window_options"]});
+      port.postMessage({gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix, windowOptions: window.localStorage["gmail_window_options"]});
     } else {
       console.log("Unsupported req on valid port");
     }
@@ -47,11 +50,58 @@ chrome.extension.onConnect.addListener(function(port) {
 
 
 
+// Context menu callbacks
+function menuClicked(type, info, tab) {
+  // 1) Determine the default text for the e-mail
+  var emailStr = "";
+  var emailSubj = "";
+  var addPage = true;
+  switch (type) {
+  case 'page':
+    emailStr = "A nice page: " + info.pageUrl;
+    emailSubj = tab.title;
+    addPage = false;
+    break;
+  case 'selection':
+    emailStr = info.selectionText;
+    emailSubj = tab.title;
+    break;
+  case 'link':
+    emailStr = "A nice link: " + info.linkUrl;
+    emailSubj = "A nice link";
+    break;
+  default:
+    emailStr = "A nice " + type + ": " + info.srcUrl;
+    emailSubj = "A nice " + type;
+  }
+  if (addPage)
+    emailStr = emailStr + "\nFrom: " + info.pageUrl;
+
+  // 2) Build the Gmail URL
+  var gmailFullUrl = makeGmailDomainUrl() + "mail/?view=cm&fs=1&tf=1&su=" + encodeURIComponent(emailSubj) + "&body=" + encodeURIComponent(emailStr);
+
+  // 3) Open the composition window/tab
+  window.open(gmailFullUrl,"_blank",window.localStorage["gmail_window_options"]);
+}
+function creationCallback() {
+  if (chrome.extension.lastError)
+    console.log("Error creating context menu: ", chrome.extension.lastError);
+}
+
+// Register the right-click menus
+chrome.contextMenus.create({ "title": "&Email this page address", "contexts": ['page'], 
+  "onclick": function(info,tab) { menuClicked('page',info,tab) } }, creationCallback);
+chrome.contextMenus.create({ "title": "&Email this text", "contexts": ['selection'], 
+  "onclick": function(info,tab) { menuClicked('selection',info,tab) } }, creationCallback);
+chrome.contextMenus.create({ "title": "&Email this link", "contexts": ['link'], 
+  "onclick": function(info,tab) { menuClicked('link',info,tab) } }, creationCallback);
+chrome.contextMenus.create({ "title": "&Email this image", "contexts": ['image'], 
+  "onclick": function(info,tab) { menuClicked('image',info,tab) } }, creationCallback);
+chrome.contextMenus.create({ "title": "&Email this video", "contexts": ['video'], 
+  "onclick": function(info,tab) { menuClicked('video',info,tab) } }, creationCallback);
+chrome.contextMenus.create({ "title": "&Email this audio clip", "contexts": ['audio'], 
+  "onclick": function(info,tab) { menuClicked('audio clip',info,tab) } }, creationCallback);
+
 </script>
 </head>
-<body>
-	<form>
-		<textarea id="aux_textarea">
-	</form>
-</body>
 </html>
