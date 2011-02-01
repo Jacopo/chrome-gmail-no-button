@@ -2,6 +2,8 @@ Some pages include clickable email addresses (mailto: links). By default they op
 
 It is a modification of the original Google extension [Send from Gmail][1], but it won't add any extra button to the minimalistic Chrome toolbar. Besides a couple of bugfixes, it adds the ability to open links in a new window. See the [extension gallery page][2] for the changelog.
 
+The 'Email this page' feature is optionally available from the right-click menu.
+
 Less is more!
 
 
