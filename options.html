@@ -31,8 +31,8 @@
   }
   div.options_group {
 	  border-bottom: 1px solid #ccc;
-	  margin-bottom: 1em;
-	  padding-bottom: 1em;
+	  margin-bottom: 1.2em;
+	  padding-bottom: 1.2em;
   }
 </style>
 <script>
@@ -91,21 +91,21 @@ function saveOptions() {
   <form action="javascript:saveOptions()">
 	  <h2><span id="optOpenNewWindow"></span></h2>
   <div id="new_window_option" class="options_group">
-    <label><input id="open_new_tab" type="radio" name="window_options_radio" value="tab" /><span id="optInTab"></span></label><br />
-    <label><input id="open_new_window" type="radio" name="window_options_radio" value="win" /><span id="optInWin"></span></label>
+    <label><input onclick="saveOptions()" id="open_new_tab" type="radio" name="window_options_radio" value="tab" /><span id="optInTab"></span></label><br />
+    <label><input onclick="saveOptions()" id="open_new_window" type="radio" name="window_options_radio" value="win" /><span id="optInWin"></span></label>
   </div>
   <div id="email_this_option" class="options_group">
-    <label><input id="email_this" type="checkbox" /><span id="optEmailThis"></span></label>
+    <label><input onclick="saveOptions()" id="email_this" type="checkbox" /><span id="optEmailThis"></span></label>
   </div>
   <h2><span id="optGoogleApps"></span></h2>
-  <div id="apps_for_domain_option" class="options_group">
+  <div id="apps_for_domain_option" class="options_group" style="border-bottom: none; margin-bottom: 2em;">
     <span id="optDomain"></span><br />
     <span id="optConsumerGmail"></span><br />
     <input id="domain_info" type="text" name="domain_info" value="" style="width:400px" />
+    <input id="options_save" type="submit" value="Save" />
   </div>
   <div>
-    <input id="options_save" type="submit" value="Save" />
-    <span id="optNoteReload"></span>
+	  The required fine print: <i>Gmail&trade; and Google Apps&trade; are registered trademarks of Google Inc. I am not affiliated with Google.</i>
   </div>
   </form>
 </body>
