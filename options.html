@@ -30,8 +30,8 @@
 	  margin-bottom: 0em;
   }
   div.options_group {
-	  border-bottom: 1px solid #aaa;
-	  margin-bottom: 2em;
+	  border-bottom: 1px solid #ccc;
+	  margin-bottom: 1em;
 	  padding-bottom: 1em;
   }
 </style>
@@ -47,6 +47,7 @@ function doinit() {
 	document.getElementById('optOpenNewWindow').innerHTML = chrome.i18n.getMessage('optOpenNewWindow');
 	document.getElementById('optInTab').innerHTML = chrome.i18n.getMessage('optInTab');
 	document.getElementById('optInWin').innerHTML = chrome.i18n.getMessage('optInWin');
+	document.getElementById('optEmailThis').innerHTML = chrome.i18n.getMessage('optEmailThis');
 	document.getElementById('optNoteReload').innerHTML = chrome.i18n.getMessage('optNoteReload');
 	document.getElementById('options_save').value = chrome.i18n.getMessage('optSave');
 }
@@ -63,17 +64,22 @@ function loadSavedOptions() {
   }
   document.getElementById('open_new_tab').checked = (windowOptions != optionsForNewWindow);
   document.getElementById('open_new_window').checked = (windowOptions == optionsForNewWindow);
+  document.getElementById('email_this').checked = !(localStorage["enable_email_this"] == "off");
 }
 
 function saveOptions() {
   var domainVal = document.getElementById('domain_info').value; 
-  console.log("Domain - " + domainVal);
   if ((domainVal != "") && (domainVal.indexOf('.') == -1)) {
     alert(chrome.i18n.getMessage("optDomainError", domainVal));
   } else {
     window.localStorage["domainName"] = domainVal;
   }
   localStorage["gmail_window_options"] = document.getElementById('open_new_window').checked ? optionsForNewWindow : "";
+  localStorage["enable_email_this"] = document.getElementById('email_this').checked ? "on" : "off";
+
+  // Notify the background page
+  var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
+  bgPort.postMessage({req: "OptionsChanged"});
 }
 
 </script>
@@ -87,6 +93,9 @@ function saveOptions() {
   <div id="new_window_option" class="options_group">
     <label><input id="open_new_tab" type="radio" name="window_options_radio" value="tab" /><span id="optInTab"></span></label><br />
     <label><input id="open_new_window" type="radio" name="window_options_radio" value="win" /><span id="optInWin"></span></label>
+  </div>
+  <div id="email_this_option" class="options_group">
+    <label><input id="email_this" type="checkbox" /><span id="optEmailThis"></span></label>
   </div>
   <h2><span id="optGoogleApps"></span></h2>
   <div id="apps_for_domain_option" class="options_group">

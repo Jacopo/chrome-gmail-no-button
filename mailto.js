@@ -64,7 +64,7 @@ var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
 bgPort.postMessage({req: "OptionsPlease"});
 bgPort.onMessage.addListener(
 function(msg) {
-  //console.log("Got message from bg page - " + msg.gmailDomainUrl);
+  //console.log("Got message from bg page - " + msg.windowOptions);
   cachedGmailUrl = msg.gmailDomainUrl;
   windowOptions = msg.windowOptions;
   rewriteMailtosOnPage();

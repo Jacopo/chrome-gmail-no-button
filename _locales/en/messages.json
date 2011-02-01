@@ -29,6 +29,9 @@
 	"optInWin": {
 		"message":	"In a new window"
 	},
+	"optEmailThis": {
+		"message":	"Add an 'Email this' command to the right-click menu"
+	},
 	"optNoteReload": {
 		"message":	"Note: you might need to reload tabs for the options to take effect"
 	},

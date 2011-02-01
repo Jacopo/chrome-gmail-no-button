@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 // Copyright (c) 2009 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -7,6 +8,7 @@
 -->
 <html>
 <head>
+<meta charset="utf-8">
 
 <script>
 
@@ -23,6 +25,7 @@
 
 var baseGmailUrl = "https://mail.google.com/";
 var mailtoUrlSuffix = "mail/?extsrc=mailto&url=";
+var knownPorts = [];
 
 function makeGmailDomainUrl() {
   var gmailUrl = baseGmailUrl;
@@ -34,19 +37,38 @@ function makeGmailDomainUrl() {
 }
 
 // Send message to the mailto script to update its cached gmail url and other options.
+// We also use it to add or remove the context menus
+// Note: the options page sends this on save
 chrome.extension.onConnect.addListener(function(port) {
   if (port.name != "GmailUrlConn") {
-  // Not the mailto content script, so do not want to talk to this port. 
   } else {
     port.onMessage.addListener(function(msg) {
-    if (msg.req == "OptionsPlease") {
-      port.postMessage({gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix, windowOptions: window.localStorage["gmail_window_options"]});
-    } else {
-      console.log("Unsupported req on valid port");
-    }
+      if (msg.req == "OptionsPlease") {
+        port.postMessage({gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix, windowOptions: window.localStorage["gmail_window_options"]});
+        addToKnownPorts(port);
+      } else if (msg.req == "OptionsChanged") {
+        sendToKnownPorts({gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix, windowOptions: window.localStorage["gmail_window_options"]});
+        refreshContextMenus();
+      } else {
+        console.log("Unsupported req on valid port");
+      }
     });
   }
 });
+
+function addToKnownPorts(port) {
+  knownPorts.push(port);
+  port.onDisconnect.addListener(function (p) {
+    var i = knownPorts.indexOf(p);
+    if (i == -1)
+      console.log("What? Disconnected from an unknown port?");
+    else knownPorts.splice(i,1);
+  });
+}
+
+function sendToKnownPorts(msg) {
+  knownPorts.forEach(function(p) { p.postMessage(msg); });
+}
 
 
 
@@ -88,20 +110,32 @@ function creationCallback() {
     console.log("Error creating context menu: ", chrome.extension.lastError);
 }
 
-// Register the right-click menus
-chrome.contextMenus.create({ "title": "&Email this page address", "contexts": ['page'], 
-  "onclick": function(info,tab) { menuClicked('page',info,tab) } }, creationCallback);
-chrome.contextMenus.create({ "title": "&Email this text", "contexts": ['selection'], 
-  "onclick": function(info,tab) { menuClicked('selection',info,tab) } }, creationCallback);
-chrome.contextMenus.create({ "title": "&Email this link", "contexts": ['link'], 
-  "onclick": function(info,tab) { menuClicked('link',info,tab) } }, creationCallback);
-chrome.contextMenus.create({ "title": "&Email this image", "contexts": ['image'], 
-  "onclick": function(info,tab) { menuClicked('image',info,tab) } }, creationCallback);
-chrome.contextMenus.create({ "title": "&Email this video", "contexts": ['video'], 
-  "onclick": function(info,tab) { menuClicked('video',info,tab) } }, creationCallback);
-chrome.contextMenus.create({ "title": "&Email this audio clip", "contexts": ['audio'], 
-  "onclick": function(info,tab) { menuClicked('audio clip',info,tab) } }, creationCallback);
+
+// Right-click menus registration
+function refreshContextMenus() {
+  chrome.contextMenus.removeAll();
+  if (!(window.localStorage["enable_email_this"] == "off"))
+    contextMenusAdd();
+}
+
+function contextMenusAdd() {
+  chrome.contextMenus.create({ "title": "&Email this page address", "contexts": ['page'], 
+    "onclick": function(info,tab) { menuClicked('page',info,tab) } }, creationCallback);
+  chrome.contextMenus.create({ "title": "&Email this text", "contexts": ['selection'], 
+    "onclick": function(info,tab) { menuClicked('selection',info,tab) } }, creationCallback);
+  chrome.contextMenus.create({ "title": "&Email this link", "contexts": ['link'], 
+    "onclick": function(info,tab) { menuClicked('link',info,tab) } }, creationCallback);
+  chrome.contextMenus.create({ "title": "&Email this image", "contexts": ['image'], 
+    "onclick": function(info,tab) { menuClicked('image',info,tab) } }, creationCallback);
+  chrome.contextMenus.create({ "title": "&Email this video", "contexts": ['video'], 
+    "onclick": function(info,tab) { menuClicked('video',info,tab) } }, creationCallback);
+  chrome.contextMenus.create({ "title": "&Email this audio clip", "contexts": ['audio'], 
+    "onclick": function(info,tab) { menuClicked('audio clip',info,tab) } }, creationCallback);
+}
+
+refreshContextMenus();
 
 </script>
+<title></title>
 </head>
 </html>

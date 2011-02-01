@@ -29,6 +29,9 @@
         "optInWin": {
                 "message":      "In una nuova finestra"
         },
+        "optEmailThis": {
+                "message":      "Aggiungi il comando 'Invia via e-mail' al menu contestuale (tasto destro)."
+        },
         "optNoteReload": {
                 "message":      "Nota: potrebbe essere necessario ricaricare le pagine perché le modifiche abbiano effetto."
         },
