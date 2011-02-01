@@ -6,6 +6,7 @@ The 'Email this page' feature is optionally available from the right-click menu.
 
 Less is more!
 
+The required fine print: Gmail and Google Apps are trademarks of Google Inc. I am not affiliated with Google.
 
 [1]: https://chrome.google.com/extensions/detail/pgphcomnlaojlmmcjmiddhdapjpbgeoc
 [2]: https://chrome.google.com/extensions/detail/ahldefgplekckalfcolhhnljbbgaiboc
