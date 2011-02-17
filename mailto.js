@@ -57,14 +57,8 @@ function creaListener(originalUrl)
 }
 
 
-function prova_evento(ev)
-{
-  console.log("Prova evento: " + JSON.stringify(ev));
-}
-
 if (cachedGmailUrl != "") {
   rewriteMailtosOnPage();
-  window.addEventListener("focus", prova_evento);
 }
   
 var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
