@@ -80,7 +80,7 @@ function menuClicked(type, info, tab) {
   var addPage = true;
   switch (type) {
   case 'page':
-    emailStr = "A nice page: " + info.pageUrl;
+    emailStr = info.pageUrl;
     emailSubj = tab.title;
     addPage = false;
     break;
@@ -89,11 +89,11 @@ function menuClicked(type, info, tab) {
     emailSubj = tab.title;
     break;
   case 'link':
-    emailStr = "A nice link: " + info.linkUrl;
+    emailStr = info.linkUrl;
     emailSubj = "A nice link";
     break;
   default:
-    emailStr = "A nice " + type + ": " + info.srcUrl;
+    emailStr = info.srcUrl;
     emailSubj = "A nice " + type;
   }
   if (addPage)
