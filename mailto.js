@@ -12,8 +12,10 @@ function encodeForMailto(inUrl) {
   // so "%2B" would get replaced with "+". Unfortunately,
   // the next step still tries to decode the string, and
   // plus is interpreted as space.
-  // Workaround: double encoding for plus.
-  inUrl = inUrl.replace("+","%2B")
+  // The same is true for "#" (interpreted as start of fragment)
+  // Workaround: double encoding for + and #.
+  inUrl = inUrl.replace(/\+/g,"%2B", "g")
+  inUrl = inUrl.replace(/#/g,"%23", "g")
   return encodeURIComponent(inUrl);
 }
 
