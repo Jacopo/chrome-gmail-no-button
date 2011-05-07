@@ -13,10 +13,11 @@
       "128": "images/gmail-extension-128.png",
       "16": "images/gmail-extension-16.png",
       "32": "images/gmail-extension-32.png",
-      "64": "images/gmail-extension-64.png"
+      "64": "images/gmail-extension-64.png",
+      "48": "images/gmail-extension-48.png"
    },
    "name": "__MSG_extName__",
    "default_locale": "en",
    "options_page": "options.html",
-   "version": "1.11.11"
+   "version": "1.11.11.1"
 }
