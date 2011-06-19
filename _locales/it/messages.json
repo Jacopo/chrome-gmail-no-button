@@ -32,6 +32,9 @@
         "optEmailThis": {
                 "message":      "Aggiungi il comando 'Invia via e-mail' al menu contestuale (tasto destro)."
         },
+        "optEnableShortcut": {
+                "message":      "Ctrl-Maiusc-M invia la pagina via e-mail."
+        },
         "optNoteReload": {
                 "message":      "Nota: potrebbe essere necessario ricaricare le pagine perché le modifiche abbiano effetto."
         },

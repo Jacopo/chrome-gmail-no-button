@@ -48,6 +48,7 @@ function doinit() {
 	document.getElementById('optInTab').innerHTML = chrome.i18n.getMessage('optInTab');
 	document.getElementById('optInWin').innerHTML = chrome.i18n.getMessage('optInWin');
 	document.getElementById('optEmailThis').innerHTML = chrome.i18n.getMessage('optEmailThis');
+	document.getElementById('optEnableShortcut').innerHTML = chrome.i18n.getMessage('optEnableShortcut');
 	document.getElementById('optNoteReload').innerHTML = chrome.i18n.getMessage('optNoteReload');
 	document.getElementById('options_save').value = chrome.i18n.getMessage('optSave');
 }
@@ -65,6 +66,7 @@ function loadSavedOptions() {
   document.getElementById('open_new_tab').checked = (windowOptions != optionsForNewWindow);
   document.getElementById('open_new_window').checked = (windowOptions == optionsForNewWindow);
   document.getElementById('email_this').checked = !(localStorage["enable_email_this"] == "off");
+  document.getElementById('enable_shortcut').checked = !(localStorage["enable_shortcut"] == "off");
 }
 
 function saveOptions() {
@@ -76,6 +78,7 @@ function saveOptions() {
   }
   localStorage["gmail_window_options"] = document.getElementById('open_new_window').checked ? optionsForNewWindow : "";
   localStorage["enable_email_this"] = document.getElementById('email_this').checked ? "on" : "off";
+  localStorage["enable_shortcut"] = document.getElementById('enable_shortcut').checked ? "on" : "off";
 
   // Notify the background page
   var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
@@ -96,6 +99,8 @@ function saveOptions() {
   </div>
   <div id="email_this_option" class="options_group">
     <label><input onclick="saveOptions()" id="email_this" type="checkbox" /><span id="optEmailThis"></span></label>
+    <br />
+    <label><input onclick="saveOptions()" id="enable_shortcut" type="checkbox" /><span id="optEnableShortcut"></span></label>
   </div>
   <h2><span id="optGoogleApps"></span></h2>
   <div id="apps_for_domain_option" class="options_group" style="border-bottom: none; margin-bottom: 2em;">

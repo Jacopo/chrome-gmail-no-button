@@ -6,6 +6,7 @@
 var cachedGmailUrl = "";
 var windowOptions = "";
 var listenersAdded = false;
+var enableShortcut = false;
 
 function encodeForMailto(inUrl) {
   // GMail unescapes most of the string in the first step,
@@ -58,6 +59,12 @@ function creaListener(originalUrl)
   };
 }
 
+function keyupListener(ev)
+{
+  if (ev.ctrlKey && ev.shiftKey && (ev.keyCode == 77))
+    bgPort.postMessage({req: "EmailThisPage"});
+}
+
 
 if (cachedGmailUrl != "") {
   rewriteMailtosOnPage();
@@ -70,7 +77,12 @@ function(msg) {
   //console.log("Got message from bg page - " + msg.windowOptions);
   cachedGmailUrl = msg.gmailDomainUrl;
   windowOptions = msg.windowOptions;
+  enableShortcut = msg.enableShortcut;
   
   if (!listenersAdded)
     rewriteMailtosOnPage();
+
+  if (enableShortcut)
+    window.addEventListener("keyup", keyupListener, false);
+  else window.removeEventListener("keyup", keyupListener, false);
 });

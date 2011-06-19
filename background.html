@@ -21,6 +21,9 @@
 //
 //   2) Registers and handles the right-click context menus
 //
+//   3) Receives and handles Ctrl-Shift-M notifications from the 
+//      content scripts
+//
 //////////////////////////////////////////////////////////////////////
 
 var baseGmailUrl = "https://mail.google.com/";
@@ -40,20 +43,31 @@ function makeGmailDomainUrl() {
 // We also use it to add or remove the context menus
 // Note: the options page sends this on save
 chrome.extension.onConnect.addListener(function(port) {
-  if (port.name != "GmailUrlConn") {
-  } else {
-    port.onMessage.addListener(function(msg) {
-      if (msg.req == "OptionsPlease") {
-        port.postMessage({gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix, windowOptions: window.localStorage["gmail_window_options"]});
-        addToKnownPorts(port);
-      } else if (msg.req == "OptionsChanged") {
-        sendToKnownPorts({gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix, windowOptions: window.localStorage["gmail_window_options"]});
-        refreshContextMenus();
-      } else {
-        console.log("Unsupported req on valid port");
-      }
-    });
-  }
+  if (port.name != "GmailUrlConn")
+    return;
+
+  port.onMessage.addListener(function(msg) {
+    if (msg.req == "OptionsPlease") {
+      port.postMessage({
+        gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix,
+        windowOptions: window.localStorage["gmail_window_options"],
+        enableShortcut: !(window.localStorage["enable_shortcut"] == "off")
+      });
+      addToKnownPorts(port);
+    } else if (msg.req == "OptionsChanged") {
+      sendToKnownPorts({
+        gmailDomainUrl: makeGmailDomainUrl() + mailtoUrlSuffix,
+        windowOptions: window.localStorage["gmail_window_options"],
+        enableShortcut: !(window.localStorage["enable_shortcut"] == "off")
+      });
+      refreshContextMenus();
+    } else if (msg.req == "EmailThisPage") {
+      console.log(port);
+      openGmail(port.sender.tab.url, port.sender.tab.title);
+    } else {
+      console.log("Unsupported req on valid port");
+    }
+  });
 });
 
 function addToKnownPorts(port) {
@@ -74,7 +88,6 @@ function sendToKnownPorts(msg) {
 
 // Context menu callbacks
 function menuClicked(type, info, tab) {
-  // 1) Determine the default text for the e-mail
   var emailStr = "";
   var emailSubj = "";
   var addPage = true;
@@ -98,11 +111,13 @@ function menuClicked(type, info, tab) {
   }
   if (addPage)
     emailStr = emailStr + "\nFrom: " + info.pageUrl;
-
-  // 2) Build the Gmail URL
+  openGmail(emailStr, emailSubj);
+}
+function openGmail(emailStr, emailSubj) {
+  // Build the Gmail URL
   var gmailFullUrl = makeGmailDomainUrl() + "mail/?view=cm&fs=1&tf=1&su=" + encodeURIComponent(emailSubj) + "&body=" + encodeURIComponent(emailStr);
 
-  // 3) Open the composition window/tab
+  // Open the composition window/tab
   window.open(gmailFullUrl,"_blank",window.localStorage["gmail_window_options"]);
 }
 function creationCallback() {

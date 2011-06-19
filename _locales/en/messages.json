@@ -32,6 +32,9 @@
 	"optEmailThis": {
 		"message":	"Add an 'Email this' command to the right-click menu"
 	},
+	"optEnableShortcut": {
+		"message":	"Use Ctrl+Shift+M to email the current page"
+	},
 	"optNoteReload": {
 		"message":	"Note: you might need to reload tabs for the options to take effect"
 	},
