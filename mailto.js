@@ -20,43 +20,16 @@ function encodeForMailto(inUrl) {
   return encodeURIComponent(inUrl);
 }
 
-function rewriteMailtosOnPage() {
-  // Find all the A mailto links.
-  var result = document.evaluate(
-      '//a[contains(@href, "mailto:")]',
-      document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-  rewriteMailtos(result);
-  
-  // Find all the AREA mailto links.
-  var result = document.evaluate(
-      '//area[contains(@href, "mailto:")]',
-      document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-  rewriteMailtos(result);
+function registerDocumentListener() {
+  document.addEventListener("click", function(ev) {
+    if (ev.target.href && (ev.target.href.substr(0,7) == "mailto:")) {
+      window.open(cachedGmailUrl + encodeForMailto(ev.target.href), "_blank", windowOptions);
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }, false);
 
   listenersAdded = true;
-}
-
-function rewriteMailtos(allofthem) {
-  var item;
-  var nodes = [];
-  // cannot change the NODE_ITERATOR nodes' attributes in this loop itself
-  // since iterateNext will invalidate the state; Need to store temporarily.
-  while (item = allofthem.iterateNext()) {
-    nodes.push(item);
-  }
-  
-  for (var i = 0; i < nodes.length; i++) {
-    nodes[i].setAttribute('rel', 'noreferrer');
-    nodes[i].addEventListener('click', creaListener(nodes[i].getAttribute('href')), false);
-  }
-}
-
-function creaListener(originalUrl)
-{
-  return function(ev) {
-    window.open(cachedGmailUrl + encodeForMailto(originalUrl), "_blank", windowOptions);
-    ev.preventDefault();
-  };
 }
 
 function keyupListener(ev)
@@ -67,7 +40,7 @@ function keyupListener(ev)
 
 
 if (cachedGmailUrl != "") {
-  rewriteMailtosOnPage();
+  registerDocumentListener();
 }
   
 var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
@@ -80,7 +53,7 @@ function(msg) {
   enableShortcut = msg.enableShortcut;
   
   if (!listenersAdded)
-    rewriteMailtosOnPage();
+    registerDocumentListener();
 
   if (enableShortcut)
     window.addEventListener("keyup", keyupListener, false);
