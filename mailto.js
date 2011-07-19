@@ -42,7 +42,7 @@ function keyupListener(ev)
 if (cachedGmailUrl != "") {
   registerDocumentListener();
 }
-  
+
 var bgPort = chrome.extension.connect({name: "GmailUrlConn"});
 bgPort.postMessage({req: "OptionsPlease"});
 bgPort.onMessage.addListener(
@@ -51,7 +51,7 @@ function(msg) {
   cachedGmailUrl = msg.gmailDomainUrl;
   windowOptions = msg.windowOptions;
   enableShortcut = msg.enableShortcut;
-  
+
   if (!listenersAdded)
     registerDocumentListener();
 
