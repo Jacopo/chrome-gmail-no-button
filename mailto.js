@@ -22,10 +22,16 @@ function encodeForMailto(inUrl) {
 
 function registerDocumentListener() {
   document.addEventListener("click", function(ev) {
-    if (ev.target.href && (ev.target.href.substr(0,7) == "mailto:")) {
-      window.open(cachedGmailUrl + encodeForMailto(ev.target.href), "_blank", windowOptions);
-      ev.preventDefault();
-      ev.stopPropagation();
+    var nod = ev.target;
+    while (nod) {
+      if (nod.href && (nod.href.substr(0,7) == "mailto:")) {
+        window.open(cachedGmailUrl + encodeForMailto(nod.href), "_blank", windowOptions);
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      if (nod.href)
+	  break;
+      nod = nod.parentNode;
     }
   }, false);
 
