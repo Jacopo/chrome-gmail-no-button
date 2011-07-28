@@ -19,5 +19,5 @@
    "name": "__MSG_extName__",
    "default_locale": "en",
    "options_page": "options.html",
-   "version": "1.11.12"
+   "version": "1.11.12.1"
 }
